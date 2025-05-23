@@ -1,0 +1,115 @@
+<div class="container mx-auto px-4 py-8" data-controller="speech">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold"><%= @school_lunch.date.strftime('%Y年%m月%d日') %>の給食</h1>
+        <div class="flex space-x-2">
+          <button data-action="click->speech#speak" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            音声で聞く
+          </button>
+          <button data-action="click->speech#stop" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            停止
+          </button>
+          <%= link_to '編集', edit_school_lunch_path(@school_lunch), class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' %>
+          <%= link_to '戻る', school_lunches_path, class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded' %>
+        </div>
+      </div>
+
+      <div class="space-y-6" data-speech-target="text">
+        <div>
+          <h2 class="text-2xl font-semibold mb-4">献立内容</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-4">
+              <div>
+                <h3 class="text-lg font-medium mb-2">主菜</h3>
+                <p class="text-gray-600"><%= @school_lunch.main_dish %></p>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium mb-2">副菜</h3>
+                <p class="text-gray-600"><%= @school_lunch.side_dish %></p>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium mb-2">汁物</h3>
+                <p class="text-gray-600"><%= @school_lunch.soup %></p>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium mb-2">デザート</h3>
+                <p class="text-gray-600"><%= @school_lunch.dessert %></p>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <h3 class="text-lg font-medium mb-2">カロリー</h3>
+                <p class="text-gray-600"><%= @school_lunch.calories %> kcal</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium mb-2">栄養情報</h3>
+                <p class="text-gray-600"><%= @school_lunch.nutrition_info %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-4">必要な食材</h2>
+          <% if @school_lunch.menu_ingredients.any? %>
+            <div class="space-y-4">
+              <% @school_lunch.menu_ingredients.each do |ingredient| %>
+                <div class="bg-gray-50 p-4 rounded">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h3 class="font-medium"><%= ingredient.food.name %></h3>
+                      <p class="text-sm text-gray-600">
+                        必要量: <%= ingredient.quantity %><%= ingredient.unit %>
+                        <% case ingredient.food.status %>
+                        <% when 'out_of_stock' %>
+                          <span class="text-red-600 font-bold">（在庫切れ）</span>
+                        <% when 'low_quantity' %>
+                          <span class="text-yellow-600">（在庫が少ない）</span>
+                        <% when 'expiring_soon' %>
+                          <span class="text-orange-600">（賞味期限が近い）</span>
+                        <% end %>
+                      </p>
+                      <% if ingredient.food.notification_message.present? %>
+                        <p class="text-sm mt-1 text-gray-500">
+                          <%= ingredient.food.notification_message %>
+                        </p>
+                      <% end %>
+                    </div>
+                    <div class="flex space-x-2">
+                      <%= link_to '編集', edit_school_lunch_menu_ingredient_path(@school_lunch, ingredient), class: 'text-indigo-600 hover:text-indigo-900' %>
+                      <%= link_to '削除', school_lunch_menu_ingredient_path(@school_lunch, ingredient), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-600 hover:text-red-900' %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-600">食材が登録されていません</p>
+          <% end %>
+          <%= link_to '食材を追加', new_school_lunch_menu_ingredient_path(@school_lunch), class: 'mt-4 inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' %>
+        </div>
+
+        <% missing_ingredients = @school_lunch.check_ingredients_availability %>
+        <% if missing_ingredients.any? %>
+          <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+            <h2 class="text-xl font-semibold mb-2">不足している食材</h2>
+            <ul class="list-disc list-inside">
+              <% missing_ingredients.each do |ingredient| %>
+                <li>
+                  <%= ingredient[:name] %>: 
+                  必要量 <%= ingredient[:required] %><%= ingredient[:unit] %>,
+                  在庫 <%= ingredient[:available] %><%= ingredient[:unit] %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mt-6">
+          <%= link_to '削除', @school_lunch, method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-500 hover:text-red-700' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

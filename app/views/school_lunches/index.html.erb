@@ -1,0 +1,80 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">給食献立一覧</h1>
+    <%= link_to '新規献立', new_school_lunch_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+  </div>
+
+  <% if @today_lunch %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">今日の給食</h2>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="text-xl font-semibold mb-2">献立内容</h3>
+            <ul class="space-y-2">
+              <li class="flex items-center">
+                <span class="font-medium w-24">主菜:</span>
+                <span><%= @today_lunch.main_dish %></span>
+              </li>
+              <li class="flex items-center">
+                <span class="font-medium w-24">副菜:</span>
+                <span><%= @today_lunch.side_dish %></span>
+              </li>
+              <li class="flex items-center">
+                <span class="font-medium w-24">汁物:</span>
+                <span><%= @today_lunch.soup %></span>
+              </li>
+              <li class="flex items-center">
+                <span class="font-medium w-24">デザート:</span>
+                <span><%= @today_lunch.dessert %></span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-2">栄養情報</h3>
+            <ul class="space-y-2">
+              <li class="flex items-center">
+                <span class="font-medium w-24">カロリー:</span>
+                <span><%= @today_lunch.calories %> kcal</span>
+              </li>
+              <li class="flex items-center">
+                <span class="font-medium w-24">栄養情報:</span>
+                <span><%= @today_lunch.nutrition_info %></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-4">
+          <%= link_to '詳細', @today_lunch, class: 'text-blue-500 hover:text-blue-700 mr-2' %>
+          <%= link_to '編集', edit_school_lunch_path(@today_lunch), class: 'text-green-500 hover:text-green-700 mr-2' %>
+          <%= link_to '削除', @today_lunch, method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-500 hover:text-red-700' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @upcoming_lunches.any? %>
+    <div>
+      <h2 class="text-2xl font-semibold mb-4">今後の給食</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% @upcoming_lunches.each do |lunch| %>
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-2"><%= lunch.date.strftime('%Y年%m月%d日') %></h3>
+            <div class="space-y-2">
+              <p><span class="font-medium">主菜:</span> <%= lunch.main_dish %></p>
+              <p><span class="font-medium">副菜:</span> <%= lunch.side_dish %></p>
+              <p><span class="font-medium">汁物:</span> <%= lunch.soup %></p>
+              <p><span class="font-medium">デザート:</span> <%= lunch.dessert %></p>
+              <p><span class="font-medium">カロリー:</span> <%= lunch.calories %> kcal</p>
+            </div>
+            <div class="mt-4">
+              <%= link_to '詳細', lunch, class: 'text-blue-500 hover:text-blue-700 mr-2' %>
+              <%= link_to '編集', edit_school_lunch_path(lunch), class: 'text-green-500 hover:text-green-700 mr-2' %>
+              <%= link_to '削除', lunch, method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-500 hover:text-red-700' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

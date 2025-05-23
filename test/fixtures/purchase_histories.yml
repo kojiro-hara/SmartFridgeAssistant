@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  food: one
+  purchase_date: <%= Date.current %>
+  quantity: 2
+  unit: kg
+  price: 1000
+  notes: テスト用の購入履歴1
+
+two:
+  food: two
+  purchase_date: <%= Date.current %>
+  quantity: 1
+  unit: kg
+  price: 800
+  notes: テスト用の購入履歴2
+
+three:
+  food: three
+  purchase_date: <%= Date.current %>
+  quantity: 1
+  unit: 個
+  price: 200
+  notes: テスト用の購入履歴3

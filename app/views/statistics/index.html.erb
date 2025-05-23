@@ -1,0 +1,111 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">購入統計</h1>
+        <div class="flex items-center space-x-4">
+          <%= form_tag statistics_path, method: :get, class: 'flex items-center space-x-2' do %>
+            <%= month_field_tag :month, @current_month&.strftime('%Y-%m'), class: 'rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+            <%= submit_tag '表示', class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- 月間合計 -->
+        <div class="bg-gray-50 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">月間購入金額</h2>
+          <p class="text-3xl font-bold text-green-600">
+            <%= number_to_currency(@monthly_total || 0, unit: '¥', format: '%u%n') %>
+          </p>
+          <p class="text-sm text-gray-600 mt-2">
+            <%= @current_month&.strftime('%Y年%m月') %>
+          </p>
+        </div>
+
+        <!-- カテゴリー別集計 -->
+        <div class="bg-gray-50 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">カテゴリー別購入金額</h2>
+          <div class="space-y-2">
+            <% (@category_totals || {}).each do |category, total| %>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-700"><%= category %></span>
+                <span class="font-semibold"><%= number_to_currency(total || 0, unit: '¥', format: '%u%n') %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- 日別購入金額グラフ -->
+      <div class="bg-gray-50 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">日別購入金額</h2>
+        <div class="h-64">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 食材別購入金額トップ10 -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">食材別購入金額トップ10</h2>
+        <div class="space-y-2">
+          <% (@food_totals || []).each do |food, total| %>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-700"><%= food %></span>
+              <span class="font-semibold"><%= number_to_currency(total || 0, unit: '¥', format: '%u%n') %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :head do %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('dailyChart').getContext('2d');
+      const data = <%= raw (@daily_totals || {}).transform_values { |v| v || 0 }.to_json %>;
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: '購入金額',
+            data: Object.values(data),
+            borderColor: 'rgb(59, 130, 246)',
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '¥' + value.toLocaleString();
+                }
+              }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return '¥' + context.raw.toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+<% end %> 

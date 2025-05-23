@@ -1,0 +1,63 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">購入履歴一覧</h1>
+        <div class="text-xl font-semibold">
+          合計金額: <span class="text-green-600"><%= number_to_currency(@total_amount, unit: '¥', format: '%u%n') %></span>
+        </div>
+      </div>
+
+      <% if @purchase_histories.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">購入日</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">食材名</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数量</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">単価</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金額</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">メモ</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @purchase_histories.each do |history| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= history.purchase_date.strftime('%Y年%m月%d日') %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= history.food.name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= history.quantity %><%= history.unit %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= number_to_currency(history.price / history.quantity, unit: '¥', format: '%u%n') %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= number_to_currency(history.price, unit: '¥', format: '%u%n') %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <%= history.notes %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                      <%= link_to '詳細', food_purchase_history_path(history.food, history), class: 'text-indigo-600 hover:text-indigo-900' %>
+                      <%= link_to '編集', edit_food_purchase_history_path(history.food, history), class: 'text-green-600 hover:text-green-900' %>
+                      <%= link_to '削除', food_purchase_history_path(history.food, history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-600 hover:text-red-900' %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-gray-600 text-center py-4">購入履歴がありません</p>
+      <% end %>
+    </div>
+  </div>
+</div> 

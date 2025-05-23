@@ -1,0 +1,54 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">購入履歴の詳細</h1>
+        <div>
+          <%= link_to '編集', edit_food_purchase_history_path(@purchase_history.food, @purchase_history), class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2' %>
+          <%= link_to '戻る', food_purchase_histories_path(@purchase_history.food), class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded' %>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <h2 class="text-xl font-semibold mb-4">基本情報</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-600">食材名</p>
+              <p class="text-lg"><%= @purchase_history.food.name %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">購入日</p>
+              <p class="text-lg"><%= @purchase_history.purchase_date.strftime('%Y年%m月%d日') %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">数量</p>
+              <p class="text-lg"><%= @purchase_history.quantity %><%= @purchase_history.unit %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">単価</p>
+              <p class="text-lg">¥<%= (@purchase_history.price / @purchase_history.quantity).round(2).to_s(:delimited) %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">合計金額</p>
+              <p class="text-lg text-green-600">¥<%= @purchase_history.price.to_s(:delimited) %></p>
+            </div>
+          </div>
+        </div>
+
+        <% if @purchase_history.notes.present? %>
+          <div>
+            <h2 class="text-xl font-semibold mb-4">メモ</h2>
+            <div class="bg-gray-50 p-4 rounded">
+              <p class="text-gray-700"><%= @purchase_history.notes %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="flex justify-end">
+          <%= link_to '削除', food_purchase_history_path(@purchase_history.food, @purchase_history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-600 hover:text-red-900' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

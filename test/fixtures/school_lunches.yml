@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2025-05-22
+  main_dish: MyString
+  side_dish: MyString
+  soup: MyString
+  dessert: MyString
+  calories: 1
+  nutrition_info: MyText
+
+two:
+  date: 2025-05-22
+  main_dish: MyString
+  side_dish: MyString
+  soup: MyString
+  dessert: MyString
+  calories: 1
+  nutrition_info: MyText

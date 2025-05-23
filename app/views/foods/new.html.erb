@@ -1,0 +1,67 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">新規食材登録</h1>
+        <%= link_to '戻る', foods_path, class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded' %>
+      </div>
+
+      <%= form_with(model: @food, local: true, class: 'space-y-6') do |f| %>
+        <% if @food.errors.any? %>
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+            <h2 class="font-semibold mb-2">
+              <%= pluralize(@food.errors.count, "error") %> prohibited this food from being saved:
+            </h2>
+            <ul class="list-disc list-inside">
+              <% @food.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= f.label :name, '食材名', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+            <%= f.text_field :name, class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+          </div>
+
+          <div>
+            <%= f.label :category, 'カテゴリー', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+            <%= f.select :category, 
+                ['野菜', '肉', '魚', '乳製品', '調味料', 'その他'],
+                { include_blank: '選択してください' },
+                class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+          </div>
+
+          <div>
+            <%= f.label :quantity, '数量', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+            <%= f.number_field :quantity, min: 0, class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+          </div>
+
+          <div>
+            <%= f.label :unit, '単位', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+            <%= f.select :unit,
+                ['個', 'g', 'kg', 'ml', 'L', 'パック', '袋'],
+                { include_blank: '選択してください' },
+                class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+          </div>
+
+          <div>
+            <%= f.label :expiry_date, '賞味期限', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+            <%= f.date_field :expiry_date, class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :notes, 'メモ', class: 'block text-sm font-medium text-gray-700 mb-1' %>
+          <%= f.text_area :notes, rows: 4, class: 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500' %>
+        </div>
+
+        <div class="flex justify-end">
+          <%= f.submit '登録', class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

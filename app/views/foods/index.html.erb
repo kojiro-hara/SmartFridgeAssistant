@@ -1,0 +1,75 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">食材管理</h1>
+      <%= link_to '新規食材登録', new_food_path, class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' %>
+    </div>
+
+    <% if @expiring_soon.any? %>
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6">
+        <h2 class="text-xl font-semibold mb-2">賞味期限が近い食材</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @expiring_soon.each do |food| %>
+            <div class="bg-white p-4 rounded shadow">
+              <h3 class="font-semibold"><%= food.name %></h3>
+              <p class="text-sm text-gray-600">賞味期限: <%= food.expiry_date.strftime('%Y年%m月%d日') %></p>
+              <p class="text-sm text-gray-600">残量: <%= food.quantity %><%= food.unit %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @low_quantity.any? %>
+      <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+        <h2 class="text-xl font-semibold mb-2">在庫が少ない食材</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @low_quantity.each do |food| %>
+            <div class="bg-white p-4 rounded shadow">
+              <h3 class="font-semibold"><%= food.name %></h3>
+              <p class="text-sm text-gray-600">残量: <%= food.quantity %><%= food.unit %></p>
+              <p class="text-sm text-gray-600">賞味期限: <%= food.expiry_date.strftime('%Y年%m月%d日') %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold mb-4">全食材一覧</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">食材名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">カテゴリー</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">残量</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">賞味期限</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @foods.each do |food| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= link_to food.name, food_path(food), class: 'text-blue-600 hover:text-blue-900' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= food.category %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= food.quantity %><%= food.unit %></td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="<%= food.expiring_soon? ? 'text-red-600' : 'text-gray-600' %>">
+                    <%= food.expiry_date.strftime('%Y年%m月%d日') %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <%= link_to '編集', edit_food_path(food), class: 'text-indigo-600 hover:text-indigo-900 mr-3' %>
+                  <%= link_to '削除', food_path(food), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'text-red-600 hover:text-red-900' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: 米
+  category: 主食
+  quantity: 5
+  unit: kg
+  expiry_date: <%= 1.month.from_now %>
+  notes: テスト用の米
+
+two:
+  name: 豚肉
+  category: 肉類
+  quantity: 1
+  unit: kg
+  expiry_date: <%= 1.week.from_now %>
+  notes: テスト用の豚肉
+
+three:
+  name: キャベツ
+  category: 野菜
+  quantity: 1
+  unit: 個
+  expiry_date: <%= 1.week.from_now %>
+  notes: テスト用のキャベツ
